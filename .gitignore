@@ -1,2 +1,3 @@
+#ignore node modules due to lrge size so git does not track tha module and not save the files and modules
 node_modules/
 .env
