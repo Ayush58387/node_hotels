@@ -1,6 +1,8 @@
 const mongoose=require('mongoose');
-const mongourl='mongodb://localhost:27017/hotels'// replace my database with your database mean hotells ka databse create kr dega agar compass mein nhi hai toh
-
+require('dotenv').config();
+//const mongourl='mongodb://localhost:27017/hotels'// replace my database with your database mean hotells ka databse create kr dega agar compass mein nhi hai toh
+//const mongourl='mongodb+srv://ayushojha8650:Ayush@987@cluster0.sfrpgge.mongodb.net/' // online presence of database and data
+const mongourl=process.env.MONGODB_URL;
 // setupp mongodb connection
 mongoose.connect(mongourl,{
     useNewUrlParser:true,
