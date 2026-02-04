@@ -5,8 +5,10 @@ const db = require('./db'); // 👈 ye line zaroor honi chahiye
 require('dotenv').config();
 
 //authentication using middleware:-passport
+const passport=require('passport');
+const LocalStrategy=require('passport-local').Strategy;
+const person=require('./models/person');
 
-const passport=require('./auth');
 const menuitem=require('./models/menuitems')
 const bodyParser=require('body-parser');
 app.use(bodyParser.json()); // req.body ke form mein chala jata hai
@@ -23,6 +25,25 @@ const logRequest=(req,res,next)=>{
 }
 app.use(logRequest); // logRequest is that which contain the data of means record like time that when this url is clicked
 
+//password verification
+passport.use(new LocalStrategy(async (username,password,done)=>{
+  //authentication login here
+  try{
+    //console.log('received credentials:',username,password);
+      const user= await person.findOne({username:username});
+      if(!user)
+        return done(null,false,{message:'incorrect username.'});
+
+      const ispasswordmatch= await user.comparepassword(password);
+      if(ispasswordmatch){
+        return done(null,user);
+      }else{
+        return done(null,false,{message:'incorrect password.'});
+      }  
+  }catch(err){
+    return done(err);
+  }
+}));
 
 app.use(passport.initialize());
 const localauthmiddleware=passport.authenticate('local',{session:false});
@@ -37,7 +58,8 @@ app.get('/' ,function(req,res){
 
  //impport router files for menuitem
  const menuitemRoutes=require('./routes/menuitemRoutes')
- app.use('/menu',menuitemRoutes);
+ app.use('/menu',localauthmiddleware,menuitemRoutes);
 app.listen(PORT, () => {
   console.log('listening on port 3000');
 });
+module.exports=passport;//export configured passport
