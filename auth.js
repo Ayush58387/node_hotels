@@ -1,5 +1,6 @@
 const express = require('express');// ye express library import karta hai
 const app = express(); // sara server ko handle app hi karta hai ab sari functionality aa jati hai
+const { jwtAuthMiddleware } = require('./jwt');
 
 const db = require('./db'); // 👈 ye line zaroor honi chahiye
 require('dotenv').config();
@@ -34,7 +35,7 @@ passport.use(new LocalStrategy(async (username,password,done)=>{
       if(!user)
         return done(null,false,{message:'incorrect username.'});
 
-      const ispasswordmatch= await user.comparepassword(password);
+      const ispasswordmatch= await user.comparePassword(password);
       if(ispasswordmatch){
         return done(null,user);
       }else{
@@ -54,11 +55,11 @@ app.get('/' ,function(req,res){
 
  // import the router files
  const personroutes=require('./routes/personRoutes')
- app.use('/person',localauthmiddleware,personroutes);
+ app.use('/person',jwtAuthMiddleware,personroutes);
 
  //impport router files for menuitem
  const menuitemRoutes=require('./routes/menuitemRoutes')
- app.use('/menu',localauthmiddleware,menuitemRoutes);
+ app.use('/menu',jwtAuthMiddleware,menuitemRoutes);
 app.listen(PORT, () => {
   console.log('listening on port 3000');
 });

@@ -33,7 +33,7 @@ app.get('/' ,function(req,res){
 
  // import the router files
  const personroutes=require('./routes/personRoutes')
- app.use('/person',localauthmiddleware,personroutes);
+ app.use('/person',personroutes);
 
  //impport router files for menuitem
  const menuitemRoutes=require('./routes/menuitemRoutes')
